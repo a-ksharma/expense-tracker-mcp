@@ -6,7 +6,7 @@ import asyncio
 # Use temporary directory which should be writable
 TEMP_DIR = tempfile.gettempdir()
 DB_PATH = os.path.join(TEMP_DIR, "expenses.db")
-CATEGORIES_PATH = os.path.join(os.path.dirname(__file__), "categories.json")
+CATEGORIES_PATH = os.path.dirname(os.path.abspath(__file__), "categories.json")
 
 print(f"Database path: {DB_PATH}")
 
@@ -36,8 +36,7 @@ async def init_db():  # Keep as sync for initialization
         print(f"Database initialization error: {e}")
         raise
 
-# Initialize database synchronously at module load
-asyncio.run(init_db())
+
 
 @mcp.tool()
 async def add_expense(date, amount, category, subcategory="", note=""):  # Changed: added async
@@ -129,5 +128,6 @@ def categories():
 
 # Start the server
 if __name__ == "__main__":
+    asyncio.run(init_db())
     mcp.run(transport="http", host="0.0.0.0", port=8000)
     # mcp.run()
